@@ -11,6 +11,7 @@ from DrissionPage import Chromium, ChromiumOptions, errors
 from tqdm import TqdmExperimentalWarning
 from tqdm.rich import tqdm
 from lib.lib import Main
+import random
 
 
 warnings.filterwarnings("ignore", category=TqdmExperimentalWarning)
@@ -172,7 +173,24 @@ async def main():
     if incognitoUsage.lower() == "y" or incognitoUsage == "":
         co.incognito()
 
+    # Load proxies from file (if exists)
+    proxy_list = []
+    if os.path.exists("proxies.txt"):
+        with open("proxies.txt", "r") as f:
+            proxy_list = [line.strip() for line in f if line.strip()]
+    else:
+        print("Warning: proxies.txt not found. Continuing without proxy rotation.")
+
     for x in range(int(executionCount)):
+        # เปลี่ยน proxy ใหม่ในแต่ละรอบ
+        if proxy_list:
+            # proxy = random.choice(proxy_list)  # สุ่ม proxy
+            proxy = proxy_list[x % len(proxy_list)]  # วนลูป proxy (เปลี่ยนเป็นสุ่มได้ถ้าต้องการ)
+            if lib.testProxy(proxy)[0] is True:
+                co.set_proxy(proxy)
+                print(f"[{x+1}] Using proxy: {proxy}")
+            else:
+                print(f"[{x+1}] Proxy not working: {proxy}. Skipping or retrying...")
         if "--no-analytics" not in sys.argv:
             lib.checkAnalytics(version)
         if nameFormat:
