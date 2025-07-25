@@ -192,7 +192,8 @@ async def main():
             else:
                 print(f"[{x+1}] Proxy not working: {proxy}. Skipping or retrying...")
         if "--no-analytics" not in sys.argv:
-            lib.checkAnalytics(version)
+            if version:
+                lib.checkAnalytics(version)
         if nameFormat:
             username = lib.usernameCreator(nameFormat, None)
         else:
