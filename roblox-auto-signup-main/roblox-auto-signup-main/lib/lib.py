@@ -152,7 +152,7 @@ class Main():
                 return currentVer
         except Exception as e:
             print(f"An error occurred: {e}")
-            return currentVer
+            return None
 
     async def checkPassword(self, username, password):
         token = requests.post("https://auth.roblox.com/v2/login", headers={"User-Agent": "Mozilla/5.0"}).headers.get("x-csrf-token")
